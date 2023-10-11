@@ -31,5 +31,43 @@ RSpec.describe ArticlesController, type: :request do
       end
     end
 
+    context "Create article" do 
+      it 'return a articles for show article api' do 
+        pre_article_count = Article.count
+        post "/articles", params: {article: {title: "title", bode: "bode"}}
+        expect(response).to have_http_status(201)
+        res = JSON response.body
+        expect(Article.count).to eq(pre_article_count+1)
+      end
+
+      it 'raise error when pass wrong arguments' do 
+        post "/articles", params: {article: {title: "", bode: ""}}
+        expect(response).to have_http_status(422)
+      end
+    end
+
+    context "Update article" do 
+      it 'update the fields of article' do 
+        patch "/articles/#{@article.id}", params: {article: {title: "1 title"}}
+        expect(response).to have_http_status(200)
+        res = JSON response.body
+        expect(Article.find(@article.id).title).to eq("1 title")
+      end
+
+      it 'raise error when pass wrong arguments' do 
+        patch "/articles/#{@article.id}", params: {article: {title: ""}}
+        expect(response).to have_http_status(422)
+      end
+    end
+
+    context "Get an articles" do 
+      it 'return a articles for show article api' do 
+        delete "/articles/#{@article.id}"
+        expect(response).to have_http_status(200)
+        expect(Article.find_by_id(@article.id)).to eq(nil)
+      end
+    end
+
+
   end
 end

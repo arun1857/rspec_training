@@ -24,6 +24,7 @@ class ArticlesController < ApplicationController
     end
     def destroy
       @article.destroy
+      render json: {message: "Sucessfully destroyed"}, status: :ok
     end
     private
       def set_article
@@ -33,6 +34,6 @@ class ArticlesController < ApplicationController
         end
       end
       def article_params
-        params.require(:article).permit(:title, :body)
+        params.require(:article).permit(:title, :bode)
       end	
 end
