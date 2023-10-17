@@ -2,13 +2,17 @@ require 'rails_helper'
 
 RSpec.describe ArticlesController, type: :request do
   describe "GET /index" do
+    let(:base_url) {"/articles"}
+    let(:create_params) {
+      {article: {title: "title", bode: "bode"}}
+    }
     before(:each) do 
       @article = Article.create(title: "First Article", bode: "body")
     end
 
     context "Get all articles" do 
       it 'return all articles' do 
-        get "/articles"
+        get base_url
         expect(response).to have_http_status(200)
         res = JSON response.body
         expect(res.count).to eq(Article.count)
@@ -17,7 +21,7 @@ RSpec.describe ArticlesController, type: :request do
 
     context "Get an articles" do 
       it 'return a articles for show article api' do 
-        get "/articles/#{@article.id}"
+        get "#{base_url}/#{@article.id}"
         expect(response).to have_http_status(200)
         res = JSON response.body
         expect(res["id"]).to eq(@article.id)
@@ -34,7 +38,7 @@ RSpec.describe ArticlesController, type: :request do
     context "Create article" do 
       it 'return a articles for show article api' do 
         pre_article_count = Article.count
-        post "/articles", params: {article: {title: "title", bode: "bode"}}
+        post "/articles", params: create_params
         expect(response).to have_http_status(201)
         res = JSON response.body
         expect(Article.count).to eq(pre_article_count+1)
